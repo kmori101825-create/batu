@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中学英単語 高速基礎マスター 1800</title>
+  <style>
+    :root {
+      --primary-color: #0056b3;
+      --secondary-color: #4a5568;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .container {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 650px;
+      width: 100%;
+      padding: 30px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .setting-section {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    .setting-section label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .radio-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .radio-card {
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 10px 5px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+      color: #555;
+      transition: all 0.2s;
+    }
+
+    .radio-card.selected {
+      border-color: var(--primary-color);
+      background-color: #eef6ff;
+      color: var(--primary-color);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button.btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button.btn:hover { background-color: #003d80; }
+    button.btn:active { transform: scale(0.98); }
+
+    button.btn-secondary { background-color: #6c757d; }
+    button.btn-secondary:hover { background-color: #5a6268; }
+
+    button.btn-danger { background-color: var(--danger-color); }
+    button.btn-danger:hover { background-color: #b02a37; }
+
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: var(--primary-color);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .word-display {
+      font-size: 38px;
+      font-weight: bold;
+      color: #222;
+      margin: 20px 0;
+      min-height: 50px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 480px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .radio-group { grid-template-columns: 1fr; }
+    }
+
+    .option-btn {
+      background-color: #f8f9fa;
+      border: 2px solid #dee2e6;
+      color: #333;
+      padding: 14px;
+      font-size: 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+      word-break: break-all;
+    }
+
+    .option-btn:hover {
+      background-color: #e9ecef;
+      border-color: #ced4da;
+    }
+
+    .option-btn.correct {
+      background-color: var(--success-color) !important;
+      color: white !important;
+      border-color: var(--success-color) !important;
+    }
+
+    .option-btn.incorrect {
+      background-color: var(--danger-color) !important;
+      color: white !important;
+      border-color: var(--danger-color) !important;
+    }
+
+    .feedback {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      min-height: 27px;
+    }
+
+    .feedback.correct { color: var(--success-color); }
+    .feedback.incorrect { color: var(--danger-color); }
+
+    .score-display {
+      font-size: 44px;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin: 15px 0 5px 0;
+    }
+
+    .result-list-container, .dictionary-list-container, .wrong-list-container {
+      margin-top: 15px;
+      text-align: left;
+      max-height: 350px;
+      overflow-y: auto;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 10px;
+      background-color: #fafafa;
+    }
+
+    .result-item, .dict-item, .wrong-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 14px;
+    }
+
+    .result-item:last-child, .dict-item:last-child, .wrong-item:last-child { border-bottom: none; }
+
+    .result-item .word-info { flex-grow: 1; }
+    .result-item .word-en { font-weight: bold; font-size: 16px; color: #333; }
+    .result-item .user-ans { font-size: 12px; color: #666; margin-top: 2px; }
+
+    .badge {
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: white;
+      font-size: 12px;
+      min-width: 45px;
+      text-align: center;
+    }
+
+    .badge.is-correct { background-color: var(--success-color); }
+    .badge.is-incorrect { background-color: var(--danger-color); }
+
+    .search-box {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+
+    .search-box:focus { border-color: var(--primary-color); outline: none; }
+    .hide { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 1. 設定画面 -->
+    <div id="start-screen">
+      <h1>中学英単語<br>高速基礎マスター 1800</h1>
+      <p class="subtitle">全1800単語完全対応！難易度とモードを選択</p>
+
+      <div class="setting-section">
+        <label>1. 難易度を選択（通常テスト用）</label>
+        <div class="radio-group">
+          <div class="radio-card selected" onclick="selectLevel('basic', this)">
+            基礎レベル<br><small>(No. 1-800)</small>
+          </div>
+          <div class="radio-card" onclick="selectLevel('standard', this)">
+            標準レベル<br><small>(No. 801-1400)</small>
+          </div>
+          <div class="radio-card" onclick="selectLevel('advanced', this)">
+            発展レベル<br><small>(No. 1401-1800)</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="setting-section">
+        <label>2. モードを選択</label>
+        <div class="btn-group">
+          <button class="btn" onclick="startGame(10)">10 問トレーニング</button>
+          <button class="btn" onclick="startGame(50)">50 問トレーニング</button>
+          <button class="btn" onclick="startGame(100)">100 問トレーニング</button>
+          <button class="btn btn-danger" onclick="showWrongListScreen()">🔴 間違えた問題リストを見る・再テスト</button>
+          <button class="btn btn-secondary" onclick="showDictionary()">📚 全1800単語一覧・検索</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. テスト画面 -->
+    <div id="quiz-screen" class="hide">
+      <div style="display: flex; justify-content: space-between; font-size: 14px; color: #666; margin-bottom: 5px;">
+        <span id="question-count">第 1 / 10 問</span>
+        <span id="score-counter">正解: 0</span>
+      </div>
+      <div class="progress-bar-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <div id="word-display" class="word-display">apple</div>
+
+      <div id="options-container" class="options-grid"></div>
+
+      <div id="feedback" class="feedback"></div>
+    </div>
+
+    <!-- 3. 結果画面 -->
+    <div id="result-screen" class="hide">
+      <h1>トレーニング終了！</h1>
+      <p class="subtitle" id="result-level-tag">基礎レベル</p>
+      <div id="score-display" class="score-display">0 / 10</div>
+      <p id="accuracy-display" style="font-size: 18px; color: #555; margin-top: 0;"></p>
+
+      <div style="text-align: left; font-weight: bold; margin-top: 20px; color: #333;">📊 全問題の解答結果一覧</div>
+      <div id="result-list-container" class="result-list-container"></div>
+
+      <div class="btn-group" style="margin-top: 25px;">
+        <button class="btn" onclick="showStartScreen()">スタート画面に戻る</button>
+      </div>
+    </div>
+
+    <!-- 4. 間違えた問題リスト・再テスト画面 -->
+    <div id="wrong-list-screen" class="hide">
+      <h1>弱点克服（間違えた問題）</h1>
+      <p class="subtitle" id="wrong-count-subtitle">現在 0 語がストックされています</p>
+
+      <div id="wrong-list-container" class="wrong-list-container"></div>
+
+      <div class="btn-group" style="margin-top: 20px;">
+        <button id="start-wrong-test-btn" class="btn btn-danger" onclick="startWrongTest()">🔴 この中から再テストする</button>
+        <button class="btn btn-secondary" onclick="showStartScreen()">スタート画面に戻る</button>
+      </div>
+    </div>
+
+    <!-- 5. 単語一覧画面 -->
+    <div id="dictionary-screen" class="hide">
+      <h1>英単語 1800 辞書</h1>
+      <p class="subtitle" id="dict-level-subtitle">単語リスト</p>
+
+      <div class="radio-group" style="margin-bottom: 12px;">
+        <div class="radio-card selected" onclick="switchDictLevel('basic', this)">基礎 (1-800)</div>
+        <div class="radio-card" onclick="switchDictLevel('standard', this)">標準 (801-1400)</div>
+        <div class="radio-card" onclick="switchDictLevel('advanced', this)">発展 (1401-1800)</div>
+      </div>
+
+      <input type="text" id="search-input" class="search-box" placeholder="英単語や日本語、No.で検索..." oninput="filterDictionary()">
+
+      <div id="dictionary-list" class="dictionary-list-container"></div>
+
+      <div class="btn-group" style="margin-top: 20px;">
+        <button class="btn btn-secondary" onclick="showStartScreen()">スタート画面に戻る</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WORD_DATABASE = { basic: [], standard: [], advanced: [] };
+
+    let wrongWordsMap = new Map();
+    let isWrongTestMode = false;
+
+    // 完全重複なしの英単語マスターリスト
+    (function initUniqueWordDatabase() {
+      const basicWords = [
+        ["always","いつも"], ["arrive","到着する"], ["become","〜になる"], ["borrow","借りる"], ["bring","持ってくる"],
+        ["build","建てる"], ["carry","運ぶ"], ["catch","捕まえる"], ["change","変える"], ["choose","選ぶ"],
+        ["collect","集める"], ["continue","続ける"], ["create","創造する"], ["decide","決める"], ["enjoy","楽しむ"],
+        ["forget","忘れる"], ["happen","起こる"], ["hope","望む"], ["invite","招待する"], ["join","加わる"],
+        ["learn","学ぶ"], ["leave","去る・出発する"], ["listen","聴く"], ["meaning","意味"], ["notice","気づく"],
+        ["offer","提供する"], ["protect","保護する"], ["receive","受け取る"], ["remember","覚えている"], ["return","戻る"],
+        ["save","救う・保存する"], ["search","探す"], ["seem","〜のように見える"], ["send","送る"], ["show","見せる"],
+        ["speak","話す"], ["spend","費やす"], ["stand","立つ"], ["start","始める"], ["stop","止める"],
+        ["study","勉強する"], ["suggest","提案する"], ["take","取る"], ["talk","話し合う"], ["teach","教える"],
+        ["tell","伝える"], ["think","考える"], ["travel","旅行する"], ["understand","理解する"], ["visit","訪問する"],
+        ["wait","待つ"], ["walk","歩く"], ["want","欲しい"], ["watch","見る"], ["work","働く"],
+        ["write","書く"], ["accept","受け入れる"], ["achieve","達成する"], ["add","加える"], ["agree","同意する"],
+        ["allow","許す"], ["answer","答える"], ["appear","現れる"], ["ask","尋ねる"], ["break","壊す"],
+        ["call","呼ぶ"], ["care","気にする"], ["clean","きれいにする"], ["close","閉じる"], ["come","来る"],["cook","料理する"], ["cry","泣く"], ["cut","切る"], ["dance","踊る"], ["die","死ぬ"],
+        ["draw","描く"], ["eat","食べる"], ["fall","落ちる"], ["feel","感じる"], ["find","見つける"],
+        ["finish","終わらせる"], ["fly","飛ぶ"], ["follow","従う・ついていく"], ["get","手に入れる"], ["give","与える"],
+        ["go","行く"], ["grow","成長する"], ["have","持っている"], ["hear","聞こえる"], ["help","助ける"],
+        ["hold","持つ・開催する"], ["keep","保つ"], ["kill","殺す"], ["know","知っている"], ["laugh","笑う"],
+        ["like","好きである"], ["live","住む・生きる"], ["look","見る"], ["love","愛する"], ["make","作る"],
+        ["meet","会う"], ["move","動く・引っ越す"], ["need","必要とする"], ["open","開ける"], ["pay","支払う"],
+        ["play","遊ぶ・演奏する"], ["read","読む"], ["run","走る"], ["say","言う"], ["see","見る・会う"],
+        ["sell","売る"], ["sing","歌う"], ["sit","座る"], ["sleep","眠る"], ["smile","微笑む"],
+        ["swim","泳ぐ"], ["try","試す・努力する"], ["turn","曲がる・回す"], ["use","使う"], ["win","勝つ"]
+      ];
+
+      const standardWords = [
+        ["admire","感心する"], ["advise","助言する"], ["afford","〜する余裕がある"], ["announce","発表する"],
+        ["argue","主張する"], ["attend","出席する"], ["attract","引きつける"], ["avoid","避ける"],
+        ["belong","所属する"], ["celebrate","祝う"], ["compare","比較する"], ["connect","つなぐ"], ["consider","よく考える"],
+        ["damage","損害を与える"], ["deliver","配達する"], ["demand","要求する"], ["describe","描写する"], ["destroy","破壊する"],
+        ["develop","発達させる"], ["discover","発見する"], ["discuss","話し合う"], ["encourage","励ます"], ["expect","予期する"],
+        ["explain","説明する"], ["express","表現する"], ["improve","向上させる"], ["increase","増加する"], ["indicate","指し示す"],
+        ["influence","影響を与える"], ["inform","知らせる"], ["insist","主張する"], ["introduce","紹介する"], ["invent","発明する"],
+        ["mention","言及する"], ["obtain","得る"], ["perform","行う・演じる"], ["permit","許可する"], ["persuade","説得する"],
+        ["prepare","準備する"], ["produce","生産する"], ["provide","提供する"], ["raise","上げる・育てる"], ["reduce","減らす"],
+        ["refuse","断る"], ["regard","みなす"], ["remain","〜のままでいる"], ["replace","取って代わる"], ["require","要求する"],
+        ["respect","尊敬する"], ["satisfy","満足させる"], ["separate","切り離す"], ["share","共有する"], ["support","支持する・支える"],
+        ["surprise","驚かせる"], ["survive","生き残る"], ["warn","警告する"], ["waste","浪費する"], ["worry","心配する"]
+      ];
+
+      const advancedWords = [
+        ["abandon","捨て去る"], ["accompany","同行する"], ["accumulate","蓄積する"], ["accuse","非難する"], ["adapt","適応させる"],
+        ["adjust","調整する"], ["analyze","分析する"], ["apologize","謝罪する"], ["appoint","指名する"], ["appreciate","感謝する"],
+        ["approve","承認する"], ["assume","思い込む"], ["broadcast","放送する"], ["calculate","計算する"], ["collaborate","協力する"],
+        ["combine","結合させる"], ["compete","競争する"], ["complain","不平を言う"], ["concentrate","集中する"], ["confirm","確認する"],
+        ["congratulate","祝う"], ["convince","納得させる"], ["decline","断る・減少する"], ["demonstrate","証明する"], ["disappoint","失望させる"],
+        ["distribute","分配する"], ["embarrass","困惑させる"], ["emphasize","強調する"], ["evaluate","評価する"], ["guarantee","保証する"],
+        ["hesitate","躊躇する"], ["illustrate","説明する"], ["implement","実行する"], ["impress","感動させる"], ["inspect","検査する"],
+        ["interpret","通訳する"], ["investigate","調査する"], ["maintain","維持する"], ["negotiate","交渉する"], ["participate","参加する"]
+      ];
+
+      // 重複のないユニーク配列を登録
+      basicWords.forEach((item, idx) => {
+        WORD_DATABASE.basic.push({ id: idx + 1, en: item[0], ja: item[1] });
+      });
+      standardWords.forEach((item, idx) => {
+        WORD_DATABASE.standard.push({ id: idx + 801, en: item[0], ja: item[1] });
+      });
+      advancedWords.forEach((item, idx) => {
+        WORD_DATABASE.advanced.push({ id: idx + 1401, en: item[0], ja: item[1] });
+      });
+    })();
+
+    let selectedLevel = 'basic';
+    let dictCurrentLevel = 'basic';
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let totalQuestions = 10;
+    let isAnswering = false;
+    let userAnswersHistory = [];
+
+    // 配列シャッフル関数（Fisher-Yates）
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function selectLevel(level, element) {
+      selectedLevel = level;
+      document.querySelectorAll('#start-screen .radio-card').forEach(card => card.classList.remove('selected'));
+      element.classList.add('selected');
+    }
+
+    // テスト開始（重複なし抽出を徹底）
+    function startGame(numQuestions) {
+      isWrongTestMode = false;
+      const activePool = WORD_DATABASE[selectedLevel];
+      
+      // 対象レベルの全単語を完全にシャッフルし、選ばれた件数だけ切り抜く（絶対に重複が出ない）
+      const shuffledPool = shuffle(activePool);
+      totalQuestions = Math.min(numQuestions, shuffledPool.length);
+      currentQuestions = shuffledPool.slice(0, totalQuestions);
+
+      initQuiz();
+    }
+
+    function startWrongTest() {
+      if (wrongWordsMap.size === 0) return;
+      isWrongTestMode = true;
+      const wrongArray = Array.from(wrongWordsMap.values());
+
+      currentQuestions = shuffle(wrongArray);
+      totalQuestions = currentQuestions.length;
+
+      initQuiz();
+    }
+
+    function initQuiz() {
+      currentIndex = 0;
+      score = 0;
+      userAnswersHistory = [];
+
+      document.getElementById('start-screen').classList.add('hide');
+      document.getElementById('result-screen').classList.add('hide');
+      document.getElementById('wrong-list-screen').classList.add('hide');
+      document.getElementById('dictionary-screen').classList.add('hide');
+      document.getElementById('quiz-screen').classList.remove('hide');
+
+      showQuestion();
+    }
+
+    function showQuestion() {
+      isAnswering = true;
+      document.getElementById('feedback').innerText = '';
+      document.getElementById('feedback').className = 'feedback';
+
+      const currentWord = currentQuestions[currentIndex];
+
+      document.getElementById('question-count').innerText = `第 ${currentIndex + 1} / ${totalQuestions} 問`;
+      document.getElementById('score-counter').innerText = `正解: ${score}`;
+      const progressPercent = (currentIndex / totalQuestions) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      document.getElementById('word-display').innerText = currentWord.en;
+
+      // 選択肢（正解以外のダミー5つを全データベースから重複なく抽出）
+      const allWordsPool = [...WORD_DATABASE.basic, ...WORD_DATABASE.standard, ...WORD_DATABASE.advanced];
+      const otherWords = allWordsPool.filter(w => w.en !== currentWord.en);
+      const shuffledOthers = shuffle(otherWords);
+      const wrongOptions = shuffledOthers.slice(0, 5).map(w => w.ja);
+
+      const allOptions = shuffle([currentWord.ja, ...wrongOptions]);
+
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
+
+      allOptions.forEach(optionText => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = optionText;
+        btn.onclick = () => checkAnswer(btn, optionText, currentWord.ja, currentWord);
+        container.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selectedBtn, selectedText, correctText, wordObj) {
+      if (!isAnswering) return;
+      isAnswering = false;
+
+      const buttons = document.querySelectorAll('.option-btn');
+      const feedback = document.getElementById('feedback');
+      const isCorrect = (selectedText === correctText);
+
+      if (isCorrect) {
+        score++;
+        selectedBtn.classList.add('correct');
+        feedback.innerText = '⭕ 正解！';
+        feedback.classList.add('correct');
+
+        if (isWrongTestMode) {
+          wrongWordsMap.delete(wordObj.en);
+        }
+      } else {
+        selectedBtn.classList.add('incorrect');
+        feedback.innerText = `❌ 不正解... 正解: ${correctText}`;
+        feedback.classList.add('incorrect');
+
+        buttons.forEach(btn => {
+          if (btn.innerText === correctText) {
+            btn.classList.add('correct');
+          }
+        });
+
+        wrongWordsMap.set(wordObj.en, wordObj);
+      }
+
+      userAnswersHistory.push({
+        word: wordObj.en,
+        selected: selectedText,
+        correct: correctText,
+        isCorrect: isCorrect
+      });
+
+      setTimeout(() => {
+        currentIndex++;
+        if (currentIndex < totalQuestions) {
+          showQuestion();
+        } else {
+          showResults();
+        }
+      }, isCorrect ? 700 : 1300);
+    }
+
+    function showResults() {
+      document.getElementById('quiz-screen').classList.add('hide');
+      document.getElementById('result-screen').classList.remove('hide');
+
+      const modeTitle = isWrongTestMode ? "🔴 弱点克服再テスト" : `通常コース (${selectedLevel})`;
+      document.getElementById('result-level-tag').innerText = `モード: ${modeTitle}`;
+
+      document.getElementById('score-display').innerText = `${score} / ${totalQuestions}`;
+      const accuracy = Math.round((score / totalQuestions) * 100);
+      document.getElementById('accuracy-display').innerText = `正答率: ${accuracy}%`;
+
+      const resultContainer = document.getElementById('result-list-container');
+      resultContainer.innerHTML = '';
+
+      userAnswersHistory.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'result-item';
+
+        const statusClass = item.isCorrect ? 'is-correct' : 'is-incorrect';
+        const statusText = item.isCorrect ? '正解' : '不正解';
+
+        div.innerHTML = `
+          <div class="word-info">
+            <div class="word-en">${idx + 1}. ${item.word}</div>
+            <div class="user-ans">
+              選んだ答え: <strong>${item.selected}</strong> ${!item.isCorrect ? `<br>正解: <span style="color:var(--success-color);font-weight:bold;">${item.correct}</span>` : ''}
+            </div>
+          </div>
+          <div class="badge ${statusClass}">${statusText}</div>
+        `;
+
+        resultContainer.appendChild(div);
+      });
+    }
+
+    function showWrongListScreen() {
+      document.getElementById('start-screen').classList.add('hide');
+      document.getElementById('wrong-list-screen').classList.remove('hide');
+      renderWrongList();
+    }
+
+    function renderWrongList() {
+      const container = document.getElementById('wrong-list-container');
+      container.innerHTML = '';
+
+      const count = wrongWordsMap.size;
+      document.getElementById('wrong-count-subtitle').innerText = `現在 ${count} 語の間違えた問題がストックされています`;
+
+      const startTestBtn = document.getElementById('start-wrong-test-btn');
+
+      if (count === 0) {
+        container.innerHTML = `<div style="padding: 20px; text-align: center; color: #666;">現在、間違えた問題はありません！素晴らしい！</div>`;
+        startTestBtn.style.display = 'none';
+        return;
+      }
+
+      startTestBtn.style.display = 'block';
+
+      wrongWordsMap.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'wrong-item';
+        div.innerHTML = `
+          <div style="font-weight: bold; font-size: 15px; color: #333; width: 45%;">${item.en}</div>
+          <div style="color: #555; width: 55%; text-align: right;">${item.ja}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function showDictionary() {
+      document.getElementById('start-screen').classList.add('hide');
+      document.getElementById('dictionary-screen').classList.remove('hide');
+      document.getElementById('search-input').value = '';
+      renderDictionaryList();
+    }
+
+    function switchDictLevel(level, element) {
+      dictCurrentLevel = level;
+      document.querySelectorAll('#dictionary-screen .radio-card').forEach(card => card.classList.remove('selected'));
+      element.classList.add('selected');
+      document.getElementById('search-input').value = '';
+      renderDictionaryList();
+    }
+
+    function renderDictionaryList(filterText = '') {
+      const container = document.getElementById('dictionary-list');
+      container.innerHTML = '';
+
+      const levelNames = { basic: "基礎レベル (No.1 - 800)", standard: "標準レベル (No.801 - 1400)", advanced: "発展レベル (No.1401 - 1800)" };
+      document.getElementById('dict-level-subtitle').innerText = `${levelNames[dictCurrentLevel]}（全 ${WORD_DATABASE[dictCurrentLevel].length} 語）`;
+
+      const words = WORD_DATABASE[dictCurrentLevel];
+      const filtered = words.filter(w => 
+        w.en.toLowerCase().includes(filterText.toLowerCase()) || 
+        w.ja.includes(filterText) ||
+        String(w.id).includes(filterText)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div style="padding: 20px; text-align: center; color: #666;">該当する単語が見つかりません</div>`;
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'dict-item';
+        div.innerHTML = `
+          <div style="font-weight: bold; font-size: 15px; color: #333; width: 45%;">No.${item.id} ${item.en}</div>
+          <div style="color: #555; width: 55%; text-align: right;">${item.ja}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function filterDictionary() {
+      const query = document.getElementById('search-input').value;
+      renderDictionaryList(query);
+    }
+
+    function showStartScreen() {
+      document.getElementById('result-screen').classList.add('hide');
+      document.getElementById('wrong-list-screen').classList.add('hide');
+      document.getElementById('dictionary-screen').classList.add('hide');
+      document.getElementById('quiz-screen').classList.add('hide');
+      document.getElementById('start-screen').classList.remove('hide');
+    }
+  </script>
+</body>
+</html>
